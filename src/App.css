@@ -1,38 +1,1089 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600&display=swap');
+
+:root {
+  --leaf-brown: #8B5A2B;
+  --leaf-light: #F5F5DC;
+  --leaf-dark: #4A2C12;
+  --september-orange: #FF8C42;
+  --warm-orange: #FF6B35;
+  --cozy-cream: #FFF8E7;
+  --autumn-brown: #8B4513;
+  --pumpkin-orange: #FF7F50;
+  --amber-glow: #FFB347;
+  
+  /* Light mode colors */
+  --bg-primary: rgba(255, 248, 231, 0.2);
+  --bg-secondary: rgba(255, 248, 231, 0.4);
+  --bg-tertiary: rgba(255, 248, 231, 0.3);
+  --text-primary: #4A2C12;
+  --text-secondary: #333;
+  --text-muted: rgba(51, 51, 51, 0.6);
+  --border-primary: rgba(255, 140, 66, 0.4);
+  --border-secondary: rgba(255, 140, 66, 0.2);
+  --shadow-primary: rgba(139, 69, 19, 0.2);
+  --shadow-secondary: rgba(255, 179, 71, 0.2);
+  --overlay: rgba(0, 0, 0, 0.1);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Dark mode colors */
+.dark-mode {
+  --bg-primary: rgba(20, 20, 30, 0.9);
+  --bg-secondary: rgba(30, 30, 45, 0.8);
+  --bg-tertiary: rgba(25, 25, 35, 0.7);
+  --text-primary: #E8E8E8;
+  --text-secondary: #D0D0D0;
+  --text-muted: rgba(200, 200, 200, 0.7);
+  --border-primary: rgba(255, 140, 66, 0.6);
+  --border-secondary: rgba(255, 140, 66, 0.4);
+  --shadow-primary: rgba(0, 0, 0, 0.4);
+  --shadow-secondary: rgba(255, 179, 71, 0.3);
+  --overlay: rgba(0, 0, 0, 0.3);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+body {
+  margin: 0;
+  padding: 0;
+  background: url('./assets/autumn-forest-path-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  background-attachment: fixed;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #4A2C12;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: 'Pixelify Sans', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle overlay for better text readability */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--overlay);
+  pointer-events: none;
+  z-index: -1;
+  transition: background 0.3s ease;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--border-primary);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    4px 4px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary);
 }
 
-.App-link {
-  color: #61dafb;
+.theme-toggle:hover {
+  transform: translateY(-2px) scale(1.1);
+  box-shadow: 
+    6px 6px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary),
+    0 0 20px rgba(255, 140, 66, 0.4);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.theme-toggle:active {
+  transform: translateY(-1px) scale(1.05);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.App {
+  text-align: center;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--bg-primary);
+  border-radius: 20px;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-secondary);
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  opacity: 0.95;
+  overflow: hidden;
+  box-shadow: 
+    0 15px 50px var(--shadow-primary),
+    inset 0 2px 0 var(--shadow-secondary),
+    0 0 80px rgba(255, 140, 66, 0.2);
+  animation: appFloat 8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes appFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Enhanced title styling with forest vibes - cross-browser compatible */
+h1 {
+  background: linear-gradient(45deg, #FF8C42, #FF6B35, #FF7F50, #FFB347, #8B4513);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 3.5rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-shadow: 0 0 50px rgba(255, 140, 66, 0.6);
+  animation: titleGlow 5s ease-in-out infinite;
+  letter-spacing: 3px;
+  filter: drop-shadow(3px 3px 6px var(--shadow-primary));
+  /* Fallback for browsers that don't support background-clip */
+  color: #FF8C42;
+}
+
+/* Fallback for browsers without background-clip support */
+@supports not (background-clip: text) {
+  h1 {
+    color: #FF8C42;
+    background: none;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@keyframes titleGlow {
+  0%, 100% { 
+    background-position: 0% 50%;
+    filter: brightness(1);
+  }
+  50% { 
+    background-position: 100% 50%;
+    filter: brightness(1.2);
+  }
+}
+
+/* Header leaf image styling */
+.header-leaf {
+  width: 50px;
+  height: 50px;
+  margin-right: 15px;
+  vertical-align: middle;
+  filter: drop-shadow(2px 2px 4px var(--shadow-primary));
+  animation: leafFloat 3s ease-in-out infinite;
+}
+
+@keyframes leafFloat {
+  0%, 100% { 
+    transform: rotate(-5deg) translateY(0px);
+  }
+  50% { 
+    transform: rotate(5deg) translateY(-3px);
+  }
+}
+
+/* Loading animation for empty state */
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-primary);
+  font-size: 18px;
+  animation: pulse 2s ease-in-out infinite;
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-primary);
+  border-radius: 0px;
+  box-shadow: 
+    4px 4px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary);
+  backdrop-filter: blur(10px);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Enhanced scrollbar styling */
+.task-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.task-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 107, 107, 0.6);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 107, 107, 0.8);
+}
+
+.leaf-wrapper {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  margin: 20px 0;
+  background: url('./assets/leaf.png') no-repeat center center;
+  background-size: contain;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+/* Consolidated leaf image styling */
+.leaf-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 0 8px rgba(139, 90, 43, 0.6)) 
+          drop-shadow(0 0 4px rgba(255, 140, 66, 0.4))
+          drop-shadow(0 0 2px rgba(139, 90, 43, 0.8));
+  transition: filter 0.3s ease;
+}
+
+.leaf-wrapper:hover .leaf-image {
+  filter: drop-shadow(0 0 12px rgba(255, 140, 66, 0.8)) 
+          drop-shadow(0 0 6px rgba(255, 179, 71, 0.6))
+          drop-shadow(0 0 3px rgba(139, 90, 43, 0.9));
+}
+
+.leaf-content {
+  position: relative;
+  z-index: 2;
+  width: 80%;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  color: white;
+  font-weight: 500;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  align-items: start;
+}
+
+.task-item {
+  margin: 0;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 350px;
+}
+
+.task-item:hover {
+  transform: scale(1.02);
+}
+
+.task-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  background: var(--bg-secondary);
+  border-radius: 0px;
+  border: 2px solid var(--border-secondary);
+  box-shadow: 
+    4px 4px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary);
+  min-height: 80px;
+}
+
+.task-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding-right: 10px;
+}
+
+.task-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.task-meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.task-actions {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* Pixel art style badges - compact horizontal version */
+.category-badge, .priority-badge {
+  padding: 4px 8px;
+  border-radius: 0px;
+  font-size: 9px;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 
+    2px 2px 0px rgba(0, 0, 0, 0.3),
+    inset 1px 1px 0px rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  image-rendering: pixelated;
+  font-family: 'Pixelify Sans', sans-serif;
+  position: relative;
+  white-space: nowrap;
+}
+
+.category-badge:hover, .priority-badge:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 
+    3px 3px 0px rgba(0, 0, 0, 0.4),
+    inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+.category-badge:active, .priority-badge:active {
+  transform: translate(1px, 1px);
+  box-shadow: 
+    1px 1px 0px rgba(0, 0, 0, 0.3),
+    inset 1px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.task-text {
+  width: 100%;
+  margin: 0;
+  line-height: 1.4;
+  font-size: 16px;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.task-actions button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 10px;
+  margin-left: 5px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.task-actions button:first-child {
+  background-color: #4CAF50; /* Green for edit button */
+}
+
+.task-actions button:first-child:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+.task-actions .delete-btn {
+  background-color: #f44336; /* Red for delete button */
+}
+
+.task-actions .delete-btn:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+}
+
+button {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #f0f0f0;
+}
+
+.delete-btn {
+  color: #e74c3c;
+  border-color: #e74c3c;
+}
+
+/* Enhanced task form */
+.task-form {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+input[type="text"] {
+  padding: 15px 20px;
+  border: 2px solid var(--border-primary);
+  border-radius: 0px;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: var(--bg-tertiary);
+  backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  min-width: 300px;
+  box-shadow: 
+    4px 4px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary);
+}
+
+input[type="text"]:focus {
+  border-color: rgba(255, 107, 53, 0.8);
+  box-shadow: 
+    6px 6px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary),
+    0 0 20px rgba(255, 140, 66, 0.3);
+  transform: translateY(-2px);
+}
+
+input[type="text"]::placeholder {
+  color: var(--text-muted);
+}
+
+.add-button {
+  background: linear-gradient(45deg, #FF8C42, #FF6B35);
+  color: white;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  border-radius: 0px;
+  padding: 15px 25px;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    4px 4px 0px rgba(139, 69, 19, 0.4),
+    inset 2px 2px 0px rgba(255, 179, 71, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.add-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.add-button:hover::before {
+  left: 100%;
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    6px 6px 0px rgba(139, 69, 19, 0.5),
+    inset 2px 2px 0px rgba(255, 179, 71, 0.4),
+    0 0 20px rgba(255, 140, 66, 0.4);
+}
+
+.add-button:active {
+  transform: translateY(-1px);
+}
+
+/* Enhanced form controls */
+.category-select, .priority-select, .filter-select {
+  padding: 15px 20px;
+  border: 2px solid var(--border-primary);
+  border-radius: 0px;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: var(--bg-tertiary);
+  backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 
+    4px 4px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary);
+}
+
+.category-select:focus, .priority-select:focus, .filter-select:focus {
+  border-color: rgba(255, 107, 53, 0.8);
+  box-shadow: 
+    6px 6px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary),
+    0 0 20px rgba(255, 140, 66, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Search and filter controls */
+.controls {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  padding: 15px 20px;
+  border: 2px solid var(--border-primary);
+  border-radius: 0px;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: var(--bg-tertiary);
+  backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  min-width: 250px;
+  box-shadow: 
+    4px 4px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary);
+}
+
+.search-input:focus {
+  border-color: rgba(255, 107, 53, 0.8);
+  box-shadow: 
+    6px 6px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary),
+    0 0 20px rgba(255, 140, 66, 0.3);
+  transform: translateY(-2px);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Background falling leaves container - optimized for performance */
+.falling-leaves-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  will-change: transform;
+}
+
+/* Individual falling leaf - optimized for performance */
+.falling-leaf {
+  position: absolute;
+  top: -100px;
+  font-size: 24px;
+  opacity: 1;
+  animation: fallDown 8s linear forwards;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Natural falling animation for background leaves - realistic zigzag */
+@keyframes fallDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px) translateX(calc(var(--wind-strength, 0) * 20px)) rotate(0deg) scale(0.5);
+  }
+  12% {
+    opacity: 0.6;
+    transform: translateY(0px) translateX(calc(20px + var(--wind-strength, 0) * 30px)) rotate(30deg) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(100px) translateX(calc(-15px + var(--wind-strength, 0) * 40px)) rotate(-20deg) scale(0.7);
+  }
+  37% {
+    transform: translateY(200px) translateX(calc(25px + var(--wind-strength, 0) * 50px)) rotate(45deg) scale(0.8);
+  }
+  50% {
+    transform: translateY(300px) translateX(calc(-20px + var(--wind-strength, 0) * 60px)) rotate(-35deg) scale(0.9);
+  }
+  62% {
+    transform: translateY(400px) translateX(calc(30px + var(--wind-strength, 0) * 70px)) rotate(60deg) scale(1);
+  }
+  75% {
+    transform: translateY(500px) translateX(calc(-25px + var(--wind-strength, 0) * 80px)) rotate(-45deg) scale(1.1);
+  }
+  87% {
+    opacity: 0.6;
+    transform: translateY(600px) translateX(calc(20px + var(--wind-strength, 0) * 90px)) rotate(30deg) scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(700px) translateX(calc(-10px + var(--wind-strength, 0) * 100px)) rotate(-15deg) scale(0.5);
+  }
+}
+
+/* Gentle swaying animation for falling leaves */
+@keyframes leafSway {
+  0%, 100% {
+    transform: translateX(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateX(5px) rotate(2deg);
+  }
+  50% {
+    transform: translateX(-3px) rotate(-1deg);
+  }
+  75% {
+    transform: translateX(2px) rotate(1deg);
+  }
+}
+
+/* Task leaf falling animation - soft and gentle like background leaves */
+@keyframes taskLeafFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-200px) translateX(calc(var(--wind-effect, 0) * 15px)) rotate(0deg) scale(0.4);
+  }
+  20% {
+    opacity: 0.7;
+    transform: translateY(-120px) translateX(calc(10px + var(--wind-effect, 0) * 25px)) rotate(15deg) scale(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-60px) translateX(calc(-8px + var(--wind-effect, 0) * 35px)) rotate(-10deg) scale(0.8);
+  }
+  60% {
+    transform: translateY(-30px) translateX(calc(12px + var(--wind-effect, 0) * 45px)) rotate(20deg) scale(0.9);
+  }
+  80% {
+    transform: translateY(-10px) translateX(calc(-5px + var(--wind-effect, 0) * 55px)) rotate(-5deg) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateX(calc(var(--wind-effect, 0) * 65px)) rotate(var(--rotation, 0deg)) scale(1);
+  }
+}
+
+/* Natural falling animation from background trees - for task leaves (legacy) */
+@keyframes falling {
+  0% {
+    opacity: 0;
+    transform: translateY(-300px) translateX(calc(150px + var(--wind-effect) * 100px)) rotate(60deg) scale(0.4);
+    filter: blur(4px);
+  }
+  5% {
+    opacity: 0.3;
+    transform: translateY(-250px) translateX(calc(120px + var(--wind-effect) * 80px)) rotate(50deg) scale(0.5);
+    filter: blur(3px);
+  }
+  15% {
+    opacity: 0.6;
+    transform: translateY(-200px) translateX(calc(90px + var(--wind-effect) * 60px)) rotate(40deg) scale(0.6);
+    filter: blur(2px);
+  }
+  30% {
+    opacity: 0.8;
+    transform: translateY(-150px) translateX(calc(60px + var(--wind-effect) * 40px)) rotate(25deg) scale(0.7);
+    filter: blur(1px);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-100px) translateX(calc(30px + var(--wind-effect) * 20px)) rotate(15deg) scale(0.8);
+    filter: blur(0.5px);
+  }
+  70% {
+    transform: translateY(-50px) translateX(calc(15px + var(--wind-effect) * 10px)) rotate(8deg) scale(0.9);
+    filter: blur(0.2px);
+  }
+  85% {
+    transform: translateY(-20px) translateX(calc(5px + var(--wind-effect) * 5px)) rotate(3deg) scale(0.95);
+    filter: blur(0px);
+  }
+  95% {
+    transform: translateY(-5px) translateX(calc(2px + var(--wind-effect) * 2px)) rotate(1deg) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+/* Natural swaying animation with wind effect */
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(calc(var(--rotation, 0deg) - 0.8deg)) translateX(calc(var(--wind-effect, 0) * 2px));
+  }
+  20% {
+    transform: rotate(calc(var(--rotation, 0deg) + 0.3deg)) translateX(calc(1px + var(--wind-effect, 0) * 1px));
+  }
+  40% {
+    transform: rotate(calc(var(--rotation, 0deg) + 0.6deg)) translateX(calc(var(--wind-effect, 0) * 1.5px));
+  }
+  60% {
+    transform: rotate(calc(var(--rotation, 0deg) + 0.4deg)) translateX(calc(-1px + var(--wind-effect, 0) * 1px));
+  }
+  80% {
+    transform: rotate(calc(var(--rotation, 0deg) - 0.2deg)) translateX(calc(var(--wind-effect, 0) * 0.5px));
+  }
+}
+
+/* Gentle bounce animation for completed tasks */
+@keyframes taskComplete {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.leaf-wrapper {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  margin: 0;
+  transform-origin: center center;
+  opacity: 0;
+  animation: none;
+  max-width: 350px;
+}
+
+.leaf-wrapper.new-leaf {
+  opacity: 0;
+  animation: taskLeafFall 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--fall-delay, 0s) forwards,
+             sway 4s ease-in-out calc(4s + var(--fall-delay, 0s)) infinite;
+  transform-origin: center center;
+}
+
+/* Dynamic animation delays are now handled by CSS variables */
+
+.leaf-content {
+  position: absolute;
+  z-index: 2;
+  width: 80%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center content vertically */
+  align-items: center;
+  padding: 20px;
+  margin: 0;
+  top: 10%;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  font-size: 14px; /* Slightly smaller font */
+  line-height: 1.3;
+}
+
+/* Adjust task content inside leaf */
+.leaf-content .task-content {
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding: 0;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.leaf-content .task-text {
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.4;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 10px 5px;
+  margin: 0;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #8B5A2B transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  font-weight: 500; /* Slightly bolder text */
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3); /* Subtle text shadow for better readability */
+}
+
+.leaf-content .task-text::-webkit-scrollbar {
+  width: 4px;
+}
+
+.leaf-content .task-text::-webkit-scrollbar-thumb {
+  background-color: #8B5A2B;
+  border-radius: 2px;
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #8B4513;
+  border-radius: 0px;
+  margin-right: 15px;
+  cursor: pointer;
+  position: relative;
+  background: var(--bg-tertiary);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  box-shadow: 
+    2px 2px 0px var(--shadow-primary),
+    inset 1px 1px 0px var(--shadow-secondary);
+}
+
+input[type="checkbox"]:checked {
+  background-color: #FF8C42;
+  border-color: #8B4513;
+  box-shadow: 
+    2px 2px 0px var(--shadow-primary),
+    inset 1px 1px 0px var(--shadow-secondary);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Task text styling */
+.task-content span {
+  flex: 1;
+  position: relative;
+  padding: 5px 0;
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1.4;
+  word-break: break-word;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Completed task styling */
+.task-item.completed .task-content span {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Enhanced task counter */
+.task-counter {
+  margin-top: 30px;
+  padding: 20px;
+  background: var(--bg-tertiary);
+  backdrop-filter: blur(15px);
+  border-radius: 0px;
+  border: 2px solid var(--border-primary);
+  box-shadow: 
+    4px 4px 0px var(--shadow-primary),
+    inset 2px 2px 0px var(--shadow-secondary);
+}
+
+.task-counter p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Completed task styling with animation */
+.task-item.completed .leaf-wrapper {
+  animation: taskComplete 0.6s ease-in-out;
+}
+
+.task-item.completed .task-content {
+  background: rgba(255, 179, 71, 0.3);
+  border: 2px solid var(--border-primary);
+}
+
+/* Enhanced button styling with pixel art */
+.task-actions button {
+  background: linear-gradient(45deg, #FF8C42, #FF6B35);
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  color: white;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 6px 12px;
+  margin: 0;
+  border-radius: 0px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  box-shadow: 
+    2px 2px 0px var(--shadow-primary),
+    inset 1px 1px 0px var(--shadow-secondary);
+}
+
+.task-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    3px 3px 0px var(--shadow-primary),
+    inset 1px 1px 0px var(--shadow-secondary);
+}
+
+.task-actions .delete-btn {
+  background: linear-gradient(45deg, #FF6B35, #FF4500);
+  border: 2px solid rgba(139, 69, 19, 0.4);
+}
+
+.task-actions .delete-btn:hover {
+  background: linear-gradient(45deg, #FF4500, #DC143C);
+}
+
+/* Optimize background for 1:1 image */
+@media (orientation: landscape) {
+  body {
+    background-position: center center;
+    background-size: cover;
+  }
+}
+
+@media (orientation: portrait) {
+  body {
+    background-position: center center;
+    background-size: cover;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .App {
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  .task-form {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  input[type="text"], .search-input {
+    min-width: 250px;
+  }
+  
+  .category-select, .priority-select, .filter-select {
+    min-width: 200px;
+  }
+  
+  .task-list {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+  }
+  
+  .leaf-wrapper {
+    height: 220px;
+  }
+  
+  .task-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .App {
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  input[type="text"], .search-input {
+    min-width: 200px;
+    padding: 12px 15px;
+  }
+  
+  .category-select, .priority-select, .filter-select {
+    min-width: 180px;
+    padding: 12px 15px;
+  }
+  
+  .task-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .leaf-wrapper {
+    height: 200px;
+  }
+  
+  .task-actions button {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  
+  .category-badge, .priority-badge {
+    padding: 3px 6px;
+    font-size: 8px;
+  }
+  
+  .task-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .task-content-wrapper {
+    gap: 10px;
   }
 }
