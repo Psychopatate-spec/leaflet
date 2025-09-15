@@ -16,6 +16,7 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const editInputRef = useRef(null);
   const sounds = SoundEffects();
+  const API_BASE = '';
   
   // Create falling leaves effect - always active for atmospheric background
   useEffect(() => {
@@ -43,20 +44,57 @@ function App() {
     return () => clearInterval(interval);
   }, [leaves.length]);
 
-  // Load tasks and theme from localStorage on initial render
+  // Load tasks and theme from backend (fallback to localStorage) on initial render
   useEffect(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
-    
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === 'dark');
-    }
+    const fetchData = async () => {
+      try {
+        // Fetch preferences (theme) from backend
+        const preferencesRes = await fetch(`${API_BASE}/api/preferences`);
+        if (preferencesRes.ok) {
+          const preferences = await preferencesRes.json();
+          setIsDarkMode(preferences.theme === 'dark');
+        } else {
+          // Fallback to localStorage
+          const savedTheme = localStorage.getItem('theme');
+          if (savedTheme) {
+            setIsDarkMode(savedTheme === 'dark');
+          }
+        }
+
+        // Fetch tasks from backend
+        const tasksRes = await fetch(`${API_BASE}/api/tasks`);
+        if (tasksRes.ok) {
+          const data = await tasksRes.json();
+          // Enhance tasks with visual props expected by UI
+          const enhanced = data.map(t => ({
+            ...t,
+            isNew: false,
+            fallDelay: Math.random() * 0.5,
+            fallSpeed: 0.8 + Math.random() * 0.4,
+            windEffect: Math.random() * 0.3 - 0.15,
+          }));
+          setTasks(enhanced);
+          localStorage.setItem('tasks', JSON.stringify(enhanced));
+        } else {
+          throw new Error('Failed to fetch tasks');
+        }
+      } catch (err) {
+        // Fallback to localStorage for both theme and tasks
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+          setIsDarkMode(savedTheme === 'dark');
+        }
+        
+        const saved = localStorage.getItem('tasks');
+        if (saved) {
+          setTasks(JSON.parse(saved));
+        }
+      }
+    };
+    fetchData();
   }, []);
 
-  // Save tasks to localStorage whenever they change
+  // Save tasks cache to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
@@ -66,62 +104,106 @@ function App() {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
+  const toggleTheme = async () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
     sounds.playHoverSound();
+    
+    // Save theme preference to backend
+    try {
+      await fetch(`${API_BASE}/api/preferences`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ theme: newTheme ? 'dark' : 'light' })
+      });
+    } catch (err) {
+      // Fallback to localStorage if backend fails
+      localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    }
   };
 
-  const addTask = (e) => {
+  const addTask = async (e) => {
     e.preventDefault();
     if (newTask.trim() === '') return;
-    
-    const newTaskObj = {
-      id: Date.now(),
-      text: newTask,
-      category: newCategory,
-      priority: newPriority,
-      completed: false,
-      createdAt: new Date().toISOString(),
-      rotation: Math.floor(Math.random() * 20) - 10,
-      isNew: true,
-      // Add natural falling physics
-      fallDelay: Math.random() * 0.5, // Random delay up to 0.5s
-      fallSpeed: 0.8 + Math.random() * 0.4, // Speed variation
-      windEffect: Math.random() * 0.3 - 0.15 // Wind drift variation
-    };
-    
-    setTasks(prev => [...prev, newTaskObj]);
-    setNewTask('');
-    sounds.playAddSound();
-    
-    // Remove the new class after animation completes
-    setTimeout(() => {
-      setTasks(prevTasks => 
-        prevTasks.map(task => 
-          task.id === newTaskObj.id 
-            ? { ...task, isNew: false } 
-            : task
-        )
-      );
-    }, 5000); // Longer duration for more natural animation
+
+    try {
+      const res = await fetch(`${API_BASE}/api/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: newTask, category: newCategory, priority: newPriority })
+      });
+      if (!res.ok) throw new Error('Failed to create');
+      const created = await res.json();
+      const newTaskObj = {
+        ...created,
+        isNew: true,
+        fallDelay: Math.random() * 0.5,
+        fallSpeed: 0.8 + Math.random() * 0.4,
+        windEffect: Math.random() * 0.3 - 0.15,
+      };
+      setTasks(prev => [...prev, newTaskObj]);
+      setNewTask('');
+      sounds.playAddSound();
+      setTimeout(() => {
+        setTasks(prevTasks => prevTasks.map(task => task.id === newTaskObj.id ? { ...task, isNew: false } : task));
+      }, 5000);
+    } catch (err) {
+      // Fallback local create
+      const newTaskObj = {
+        id: Date.now().toString(),
+        text: newTask,
+        category: newCategory,
+        priority: newPriority,
+        completed: false,
+        createdAt: new Date().toISOString(),
+        rotation: Math.floor(Math.random() * 20) - 10,
+        isNew: true,
+        fallDelay: Math.random() * 0.5,
+        fallSpeed: 0.8 + Math.random() * 0.4,
+        windEffect: Math.random() * 0.3 - 0.15,
+      };
+      setTasks(prev => [...prev, newTaskObj]);
+      setNewTask('');
+      sounds.playAddSound();
+      setTimeout(() => {
+        setTasks(prevTasks => prevTasks.map(task => task.id === newTaskObj.id ? { ...task, isNew: false } : task));
+      }, 5000);
+    }
   };
 
   
-  const toggleTask = (id) => {
-    setTasks(prevTasks => {
-      const task = prevTasks.find(t => t.id === id);
-      if (task && !task.completed) {
+  const toggleTask = async (id) => {
+    const target = tasks.find(t => t.id === id);
+    const newCompleted = !(target && target.completed);
+    
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: newCompleted } : t));
+    
+    try {
+      if (target && !target.completed) {
         sounds.playCompleteSound();
       }
-      return prevTasks.map(task => 
-        task.id === id ? { ...task, completed: !task.completed } : task
-      );
-    });
+      await fetch(`${API_BASE}/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completed: newCompleted })
+      });
+    } catch (err) {
+      // Fallback: update localStorage if backend fails
+      const updatedTasks = tasks.map(t => t.id === id ? { ...t, completed: newCompleted } : t);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    }
   };
 
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
     setTasks(prevTasks => prevTasks.filter(task => task.id !== id));
     sounds.playDeleteSound();
+    try {
+      await fetch(`${API_BASE}/api/tasks/${id}`, { method: 'DELETE' });
+    } catch (err) {
+      // Fallback: update localStorage if backend fails
+      const updatedTasks = tasks.filter(task => task.id !== id);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    }
   };
 
   const startEditing = (task) => {
@@ -130,13 +212,21 @@ function App() {
     sounds.playEditSound();
   };
 
-  const saveEdit = (id) => {
-    setTasks(prevTasks => 
-      prevTasks.map(task => 
-        task.id === id ? { ...task, text: editText } : task
-      )
-    );
+  const saveEdit = async (id) => {
+    const updatedTask = { text: editText };
+    setTasks(prevTasks => prevTasks.map(task => task.id === id ? { ...task, ...updatedTask } : task));
     setEditingId(null);
+    try {
+      await fetch(`${API_BASE}/api/tasks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedTask)
+      });
+    } catch (err) {
+      // Fallback: update localStorage if backend fails
+      const updatedTasks = tasks.map(task => task.id === id ? { ...task, ...updatedTask } : task);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    }
     setEditText('');
   };
 
