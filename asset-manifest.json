@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/leaflet/static/css/main.43524e14.css",
+    "main.js": "/leaflet/static/js/main.18e4559f.js",
+    "static/media/autumn-forest-path-bg.jpg": "/leaflet/static/media/autumn-forest-path-bg.48b654ab52df5ce10154.jpg",
+    "index.html": "/leaflet/index.html",
+    "main.43524e14.css.map": "/leaflet/static/css/main.43524e14.css.map",
+    "main.18e4559f.js.map": "/leaflet/static/js/main.18e4559f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.43524e14.css",
+    "static/js/main.18e4559f.js"
+  ]
+}
