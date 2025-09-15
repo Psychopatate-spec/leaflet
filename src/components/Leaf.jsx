@@ -1,4 +1,4 @@
-import React from 'react';
+// React import not required with the new JSX transform
 import leafImage from '../assets/leaf.png';
 import '../App.css';
 

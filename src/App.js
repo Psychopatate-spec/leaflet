@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Leaf from './components/Leaf';
 import SoundEffects from './components/SoundEffects';
@@ -302,7 +302,7 @@ function App() {
       </div>
       
       <h1>
-        <img src="/leaf.png" alt="Leaf" className="header-leaf" />
+        <img src={`${process.env.PUBLIC_URL}/leaf.png`} alt="Leaf" className="header-leaf" />
         Leaflet
       </h1>
       

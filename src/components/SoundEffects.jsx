@@ -1,4 +1,4 @@
-import React from 'react';
+// React import not required with the new JSX transform
 
 const SoundEffects = () => {
   // Create audio context for sound effects
