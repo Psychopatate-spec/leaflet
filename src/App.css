@@ -1240,6 +1240,32 @@ input[type="checkbox"]:checked::after {
 .calendar-cell:hover { border-color: var(--border-primary); }
 
 /* Spotify */
+.spotify-status { margin-bottom: 10px; }
+.spotify-status .status { 
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  font-size: 14px; 
+  font-weight: 500;
+  border: 1px solid var(--border-secondary);
+}
+.spotify-status .status.ready { 
+  background: linear-gradient(180deg, rgba(30, 215, 96, 0.1), rgba(30, 215, 96, 0.05)); 
+  border-color: rgba(30, 215, 96, 0.3);
+  color: #1ed760;
+}
+.spotify-status .status.not_ready { 
+  background: linear-gradient(180deg, rgba(255, 179, 71, 0.1), rgba(255, 179, 71, 0.05)); 
+  border-color: rgba(255, 179, 71, 0.3);
+  color: #ffb347;
+}
+.spotify-status .status.error,
+.spotify-status .status.auth_error,
+.spotify-status .status.account_error,
+.spotify-status .status.playback_error { 
+  background: linear-gradient(180deg, rgba(255, 107, 53, 0.1), rgba(255, 107, 53, 0.05)); 
+  border-color: rgba(255, 107, 53, 0.3);
+  color: #ff6b35;
+}
 .spotify-search { display: flex; gap: 8px; margin-bottom: 8px; }
 .spotify-now-playing { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
 .spotify-now-playing img { width: 56px; height: 56px; border-radius: 6px; }

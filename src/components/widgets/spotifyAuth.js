@@ -1,12 +1,12 @@
 // Utilities for Spotify OAuth PKCE in SPA
 
-// Prefer env, fallback to provided client id if not set
-const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID || 'c5e18e349b6f40f9a36d3b0b742c40b9';
+// Spotify API credentials
+const CLIENT_ID = 'c5e18e349b6f40f9a36d3b0b742c40b9';
+const CLIENT_SECRET = '0e02137e32cc4ef6b5602bdfcdfda8fb';
 // IMPORTANT: Redirect URI must match what you register in the Spotify Dashboard exactly.
 // For GitHub Pages project sites, the deployed app URL is typically
 // https://<user>.github.io/<repo>. Do NOT use the GitHub repository URL.
-// You can override via REACT_APP_SPOTIFY_REDIRECT_URI at build time.
-const REDIRECT_URI = process.env.REACT_APP_SPOTIFY_REDIRECT_URI || 'https://psychopatate-spec.github.io/leaflet';
+const REDIRECT_URI = 'https://psychopatate-spec.github.io/leaflet';
 const SCOPE = 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state';
 
 function base64UrlEncode(uint8Array) {
