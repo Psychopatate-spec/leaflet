@@ -98,6 +98,7 @@ app.put('/api/tasks/:id', (req, res) => {
   if (idx === -1) {
     return res.status(404).json({ error: 'task not found' });
   }
+  // Allow dueDate field for calendar sync
   const updated = { ...tasks[idx], ...updates, id: tasks[idx].id };
   tasks[idx] = updated;
   writeTasks(tasks);

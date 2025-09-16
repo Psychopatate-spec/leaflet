@@ -2,6 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Leaf from './components/Leaf';
 import SoundEffects from './components/SoundEffects';
+import WidgetManager from './components/widgets/WidgetManager';
+import TodoWidget from './components/widgets/TodoWidget';
+import PomodoroWidget from './components/widgets/PomodoroWidget';
+import CalendarWidget from './components/widgets/CalendarWidget';
+import SpotifyWidget from './components/widgets/SpotifyWidget';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -270,6 +275,13 @@ function App() {
   const getPriorityColor = (priority) => colors.priority[priority] || colors.priority.medium;
   const getCategoryColor = (category) => colors.category[category] || colors.category.general;
 
+  const widgetDefs = {
+    todo: { title: 'To‑Do', Component: TodoWidget, width: 420 },
+    pomodoro: { title: 'Pomodoro', Component: PomodoroWidget, width: 360 },
+    calendar: { title: 'Calendar', Component: CalendarWidget, width: 640 },
+    spotify: { title: 'Music', Component: SpotifyWidget, width: 420 },
+  };
+
   return (
     <div className={`App ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
       {/* Theme Toggle Button */}
@@ -306,162 +318,7 @@ function App() {
         Leaflet
       </h1>
       
-      <form onSubmit={addTask} className="task-form">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Add a new task..."
-        />
-        <select 
-          value={newCategory} 
-          onChange={(e) => setNewCategory(e.target.value)}
-          className="category-select"
-        >
-          <option value="general">General</option>
-          <option value="work">Work</option>
-          <option value="personal">Personal</option>
-          <option value="shopping">Shopping</option>
-          <option value="health">Health</option>
-        </select>
-        <select 
-          value={newPriority} 
-          onChange={(e) => setNewPriority(e.target.value)}
-          className="priority-select"
-        >
-          <option value="low">Low Priority</option>
-          <option value="medium">Medium Priority</option>
-          <option value="high">High Priority</option>
-        </select>
-        <button 
-          type="submit" 
-          className="add-button"
-          onMouseEnter={() => sounds.playHoverSound()}
-        >
-          Add Task
-        </button>
-      </form>
-
-      {/* Search and Filter Controls */}
-      <div className="controls">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search tasks..."
-          className="search-input"
-        />
-        <select 
-          value={filterCategory} 
-          onChange={(e) => setFilterCategory(e.target.value)}
-          className="filter-select"
-        >
-          {categories.map(category => (
-            <option key={category} value={category}>
-              {category === 'all' ? 'All Categories' : category.charAt(0).toUpperCase() + category.slice(1)}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {filteredTasks.length === 0 ? (
-        <div className="empty-state">
-          {searchTerm || filterCategory !== 'all' 
-            ? `No tasks found matching "${searchTerm}" in ${filterCategory === 'all' ? 'all categories' : filterCategory}`
-            : "🍁 No tasks yet! Add your first task above 🍁"
-          }
-        </div>
-      ) : (
-        <ul className="task-list">
-          {filteredTasks.map(task => (
-          <li key={task.id} className="task-item">
-            <Leaf 
-              rotation={task.rotation} 
-              isNew={task.isNew}
-              fallDelay={task.fallDelay}
-              fallSpeed={task.fallSpeed}
-              windEffect={task.windEffect}
-            >
-              <div className="task-content">
-                <input 
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => toggleTask(task.id)}
-                />
-                {editingId === task.id ? (
-                  <div className="edit-container">
-                    <input
-                      type="text"
-                      ref={editInputRef}
-                      value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
-                      onBlur={() => saveEdit(task.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') saveEdit(task.id);
-                        if (e.key === 'Escape') setEditingId(null);
-                      }}
-                    />
-                    <div className="edit-buttons">
-                      <button type="button" onClick={() => saveEdit(task.id)}>Save</button>
-                      <button type="button" onClick={() => setEditingId(null)}>Cancel</button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div className="task-content-wrapper">
-                      <span className={`task-text ${task.completed ? 'completed' : ''}`}>
-                        {task.text}
-                      </span>
-                      <div className="task-controls">
-                        <div className="task-meta">
-                          <span 
-                            className="category-badge"
-                            style={{ backgroundColor: getCategoryColor(task.category) }}
-                          >
-                            {task.category}
-                          </span>
-                          <span 
-                            className="priority-badge"
-                            style={{ backgroundColor: getPriorityColor(task.priority) }}
-                          >
-                            {task.priority}
-                          </span>
-                        </div>
-                        <div className="task-actions">
-                          {!task.completed && (
-                            <button 
-                              type="button" 
-                              onClick={() => startEditing(task)}
-                              onMouseEnter={() => sounds.playHoverSound()}
-                            >
-                              Edit
-                            </button>
-                          )}
-                          <button 
-                            type="button" 
-                            className="delete-btn"
-                            onClick={() => deleteTask(task.id)}
-                            onMouseEnter={() => sounds.playHoverSound()}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </Leaf>
-          </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="task-counter">
-        <p>
-          Completed: {completedTasks} | Remaining: {remainingTasks}
-        </p>
-      </div>
+      <WidgetManager widgets={widgetDefs} />
     </div>
   );
 }

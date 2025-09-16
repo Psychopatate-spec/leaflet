@@ -27,12 +27,12 @@
 
 /* Dark mode colors */
 .dark-mode {
-  --bg-primary: rgba(20, 20, 30, 0.9);
-  --bg-secondary: rgba(30, 30, 45, 0.8);
-  --bg-tertiary: rgba(25, 25, 35, 0.7);
-  --text-primary: #E8E8E8;
-  --text-secondary: #D0D0D0;
-  --text-muted: rgba(200, 200, 200, 0.7);
+  --bg-primary: rgba(18, 18, 24, 0.9);
+  --bg-secondary: rgba(26, 24, 30, 0.85);
+  --bg-tertiary: rgba(32, 30, 38, 0.85);
+  --text-primary: #F2EDE6; /* warm light */
+  --text-secondary: #E6D7C6;
+  --text-muted: rgba(230, 215, 198, 0.7);
   --border-primary: rgba(255, 140, 66, 0.6);
   --border-secondary: rgba(255, 140, 66, 0.4);
   --shadow-primary: rgba(0, 0, 0, 0.4);
@@ -104,6 +104,13 @@ body::before {
     0 0 20px rgba(255, 140, 66, 0.4);
 }
 
+.dark-mode .theme-toggle:hover {
+  box-shadow:
+    6px 6px 0px rgba(0,0,0,0.6),
+    inset 2px 2px 0px rgba(255,179,71,0.4),
+    0 0 22px rgba(255,140,66,0.5);
+}
+
 .theme-toggle:active {
   transform: translateY(-1px) scale(1.05);
 }
@@ -115,8 +122,9 @@ code {
 
 .App {
   text-align: center;
-  max-width: 1000px;
-  width: 100%;
+  width: 90vw;
+  max-width: 1600px;
+  min-width: 1100px;
   margin: 0 auto;
   padding: 20px;
   background-color: var(--bg-primary);
@@ -1114,3 +1122,132 @@ input[type="checkbox"]:checked::after {
     font-size: 18px;
   }
 }
+
+/* --- Widgets --- */
+.widget-manager {
+  position: relative;
+  min-height: 60vh;
+  overflow: visible;
+}
+
+.widget-launcher {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.widget-launcher button {
+  background: linear-gradient(45deg, #FF8C42, #FF6B35);
+  color: #fff;
+  border: 2px solid rgba(139, 69, 19, 0.3);
+  padding: 10px 14px;
+  border-radius: 0px;
+  box-shadow: 2px 2px 0px var(--shadow-primary), inset 1px 1px 0px var(--shadow-secondary);
+}
+
+.widget-window {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-primary);
+  border-radius: 8px;
+  box-shadow: 8px 8px 0px var(--shadow-primary);
+  backdrop-filter: blur(10px);
+  touch-action: none; /* allow pointer events to handle dragging */
+}
+
+.widget-window-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  cursor: move;
+  background: linear-gradient(90deg, rgba(255,140,66,0.12), rgba(255,179,71,0.08));
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.widget-window-title {
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-shadow: 0 1px 1px rgba(0,0,0,0.25);
+  font-family: 'Pixelify Sans', sans-serif;
+}
+
+.widget-window-body {
+  padding: 12px;
+  overflow: auto;
+  max-width: 100%;
+  max-height: calc(100% - 44px);
+}
+
+.widget-window-actions button {
+  background: transparent;
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.widget-window-actions button:hover {
+  background: rgba(255,140,66,0.18);
+}
+
+/* resize handle removed (resizing disabled) */
+
+/* Pomodoro */
+.pomodoro-widget .row { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 8px 0; }
+.pomodoro-widget input[type="number"] { width: 72px; padding: 6px; }
+.pomodoro-widget .mode-badge { padding: 4px 8px; border: 1px solid var(--border-primary); background: var(--bg-tertiary); color: var(--text-primary); box-shadow: 2px 2px 0 var(--shadow-primary), inset 1px 1px 0 var(--shadow-secondary); }
+.pomodoro-widget svg text { fill: var(--text-primary); font-weight: 700; }
+.pomodoro-widget button, .spotify-widget button, .calendar-widget button { color: var(--text-primary); border-color: var(--border-primary); }
+.pomodoro-widget label, .spotify-widget .meta, .calendar-widget, .calendar-widget input, .calendar-widget .calendar-dow, .calendar-widget .calendar-date-number { color: var(--text-primary); }
+.spotify-widget input { color: var(--text-primary); }
+.dark-mode .spotify-widget .muted { color: var(--text-primary); }
+.pomodoro-widget button, .calendar-widget button, .spotify-widget button, .add-button, .task-actions button, .theme-toggle {
+  font-family: 'Pixelify Sans', sans-serif;
+  image-rendering: pixelated;
+}
+.pomodoro-widget input[type="number"], .calendar-widget input[type="text"], .spotify-widget input[type="text"] {
+  font-family: 'Pixelify Sans', sans-serif;
+}
+.spotify-widget .muted { font-family: 'Pixelify Sans', sans-serif; }
+.dark-mode .pomodoro-widget button:hover, .dark-mode .spotify-widget button:hover, .dark-mode .calendar-widget button:hover, .dark-mode .task-actions button:hover, .dark-mode .add-button:hover {
+  background: rgba(255,140,66,0.2);
+  color: var(--text-primary);
+}
+
+/* Calendar */
+.calendar-widget { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.calendar-header { display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; color: var(--text-secondary); }
+.calendar-title { font-size: 20px; letter-spacing: 0.5px; }
+.calendar-header button { font-family: 'Pixelify Sans', sans-serif; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.calendar-cell { background: var(--bg-tertiary); border: 1px solid var(--border-secondary); min-height: 64px; padding: 4px; position: relative; }
+.calendar-cell.muted { opacity: 0.5; }
+.calendar-cell.selected { outline: 2px solid #FF6B35; }
+.calendar-dow { text-align: center; font-weight: 600; background: transparent; border: none; }
+.calendar-date-number { font-size: 12px; opacity: 0.9; }
+.calendar-date-dots { position: absolute; bottom: 4px; left: 4px; display: flex; gap: 4px; }
+.calendar-date-dots .dot { width: 6px; height: 6px; border-radius: 50%; background: #FF8C42; }
+.calendar-date-dots .dot.done { background: #4CAF50; }
+.calendar-sidebar { display: flex; flex-direction: column; gap: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-secondary); padding: 10px; color: var(--text-primary); }
+.calendar-task-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.calendar-task-item .completed { text-decoration: line-through; opacity: 0.7; }
+.calendar-cell:hover { border-color: var(--border-primary); }
+
+/* Spotify */
+.spotify-search { display: flex; gap: 8px; margin-bottom: 8px; }
+.spotify-now-playing { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.spotify-now-playing img { width: 56px; height: 56px; border-radius: 6px; }
+.spotify-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; max-height: 320px; overflow: auto; }
+.spotify-result { display: flex; gap: 8px; align-items: center; border: 1px solid var(--border-secondary); background: linear-gradient(180deg, var(--bg-tertiary), rgba(255,179,71,0.06)); padding: 6px; box-shadow: 2px 2px 0 var(--shadow-primary), inset 1px 1px 0 var(--shadow-secondary); }
+.spotify-result img { width: 40px; height: 40px; border-radius: 4px; }
+.spotify-result .title { font-weight: 700; color: var(--text-primary); }
+.muted { opacity: 0.7; }
+
+@media (max-width: 900px) {
+  .calendar-widget { grid-template-columns: 1fr; }
+}
+
+/* Desktop-focused layout: no mobile width overrides */
