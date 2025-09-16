@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/leaflet/static/css/main.af79b6ee.css",
-    "main.js": "/leaflet/static/js/main.65b6ee24.js",
+    "main.js": "/leaflet/static/js/main.c36903ba.js",
     "static/media/autumn-forest-path-bg.jpg": "/leaflet/static/media/autumn-forest-path-bg.48b654ab52df5ce10154.jpg",
     "index.html": "/leaflet/index.html",
     "main.af79b6ee.css.map": "/leaflet/static/css/main.af79b6ee.css.map",
-    "main.65b6ee24.js.map": "/leaflet/static/js/main.65b6ee24.js.map"
+    "main.c36903ba.js.map": "/leaflet/static/js/main.c36903ba.js.map"
   },
   "entrypoints": [
     "static/css/main.af79b6ee.css",
-    "static/js/main.65b6ee24.js"
+    "static/js/main.c36903ba.js"
   ]
 }
