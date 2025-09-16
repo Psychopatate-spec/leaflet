@@ -1136,6 +1136,7 @@ input[type="checkbox"]:checked::after {
   justify-content: center;
   flex-wrap: wrap;
   margin-bottom: 16px;
+  font-family: 'Pixelify Sans', sans-serif;
 }
 
 .widget-launcher button {
@@ -1145,6 +1146,8 @@ input[type="checkbox"]:checked::after {
   padding: 10px 14px;
   border-radius: 0px;
   box-shadow: 2px 2px 0px var(--shadow-primary), inset 1px 1px 0px var(--shadow-secondary);
+  font-family: 'Pixelify Sans', sans-serif;
+  image-rendering: pixelated;
 }
 
 .widget-window {

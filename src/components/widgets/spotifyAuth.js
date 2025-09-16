@@ -2,8 +2,8 @@
 
 // Prefer env, fallback to provided client id if not set
 const CLIENT_ID = process.env.REACT_APP_SPOTIFY_CLIENT_ID || 'c5e18e349b6f40f9a36d3b0b742c40b9';
-// Use env override if provided, else default to current origin
-const REDIRECT_URI = process.env.REACT_APP_SPOTIFY_REDIRECT_URI || window.location.origin;
+// Use env override if provided; otherwise include pathname (needed for GitHub Pages project sites)
+const REDIRECT_URI = process.env.REACT_APP_SPOTIFY_REDIRECT_URI || `${window.location.origin}${window.location.pathname.replace(/\/$/, '')}`;
 const SCOPE = 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state';
 
 function base64UrlEncode(uint8Array) {
