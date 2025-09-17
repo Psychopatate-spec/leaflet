@@ -4,10 +4,12 @@
 const CLIENT_ID = 'c5e18e349b6f40f9a36d3b0b742c40b9';
 // eslint-disable-next-line no-unused-vars
 const CLIENT_SECRET = '0e02137e32cc4ef6b5602bdfcdfda8fb'; // unused in PKCE; kept for reference
-// IMPORTANT: Redirect URI must match what you register in the Spotify Dashboard exactly.
-// For GitHub Pages project sites, the deployed app URL is typically
-// https://<user>.github.io/<repo>. Do NOT use the GitHub repository URL.
-const REDIRECT_URI = 'https://psychopatate-spec.github.io/leaflet/';
+
+// Set redirect URI based on environment
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+export const REDIRECT_URI = isLocalhost 
+  ? 'http://localhost:3000/' 
+  : 'https://psychopatate-spec.github.io/leaflet/';
 const SCOPE = 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state';
 
 function base64UrlEncode(uint8Array) {
