@@ -1,5 +1,4 @@
-// React import not required with the new JSX transform
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { beginLogin, completeLoginIfRedirected, getStoredToken } from './spotifyAuth';
 import SoundEffects from '../SoundEffects';
 
