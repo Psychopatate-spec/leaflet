@@ -22,78 +22,96 @@ const SpotifyWidget = () => {
     })();
   }, [token]);
 
+  const initializePlayer = useCallback(() => {
+    if (!window.Spotify) return null;
+
+    try {
+      const player = new window.Spotify.Player({
+        name: 'Leaflet Player',
+        getOAuthToken: cb => cb(token.access_token),
+        volume: 0.5,
+      });
+
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Spotify player ready with device ID:', device_id);
+        setDeviceId(device_id);
+        setPlayerStatus('ready');
+      });
+
+      player.addListener('not_ready', ({ device_id }) => {
+        console.log('Spotify player not ready:', device_id);
+        setPlayerStatus('not_ready');
+      });
+
+      player.addListener('initialization_error', ({ message }) => {
+        console.error('Spotify player initialization error:', message);
+        setPlayerStatus('error');
+      });
+
+      player.addListener('authentication_error', ({ message }) => {
+        console.error('Spotify player authentication error:', message);
+        setPlayerStatus('auth_error');
+      });
+
+      player.addListener('account_error', ({ message }) => {
+        console.error('Spotify player account error:', message);
+        setPlayerStatus('account_error');
+      });
+
+      player.addListener('playback_error', ({ message }) => {
+        console.error('Spotify player playback error:', message);
+        setPlayerStatus('playback_error');
+      });
+
+      player.connect();
+      return player;
+    } catch (error) {
+      console.error('Error initializing Spotify player:', error);
+      setPlayerStatus('error');
+      return null;
+    }
+  }, [token?.access_token]);
+
   useEffect(() => {
     if (!token?.access_token) return;
+
+    // Define the callback before loading the script
+    window.onSpotifyWebPlaybackSDKReady = initializePlayer;
     
     // Check if script is already loaded
     if (window.Spotify) {
-      initializePlayer();
+      const player = initializePlayer();
+      playerRef.current = player;
       return;
     }
     
     const script = document.createElement('script');
     script.src = 'https://sdk.scdn.co/spotify-player.js';
     script.async = true;
-    script.onload = () => {
-      window.onSpotifyWebPlaybackSDKReady = initializePlayer;
-    };
     script.onerror = () => {
       console.error('Failed to load Spotify Web Playback SDK');
+      setPlayerStatus('error');
     };
+    
     document.body.appendChild(script);
     
-    function initializePlayer() {
-      try {
-        const player = new window.Spotify.Player({
-          name: 'Leaflet Player',
-          getOAuthToken: cb => cb(token.access_token),
-          volume: 0.5,
-        });
-        playerRef.current = player;
-        player.addListener('ready', ({ device_id }) => {
-          console.log('Spotify player ready with device ID:', device_id);
-          setDeviceId(device_id);
-          setPlayerStatus('ready');
-        });
-        player.addListener('not_ready', ({ device_id }) => {
-          console.log('Spotify player not ready:', device_id);
-          setPlayerStatus('not_ready');
-        });
-        player.addListener('initialization_error', ({ message }) => {
-          console.error('Spotify player initialization error:', message);
-          setPlayerStatus('error');
-        });
-        player.addListener('authentication_error', ({ message }) => {
-          console.error('Spotify player authentication error:', message);
-          setPlayerStatus('auth_error');
-        });
-        player.addListener('account_error', ({ message }) => {
-          console.error('Spotify player account error:', message);
-          setPlayerStatus('account_error');
-        });
-        player.addListener('playback_error', ({ message }) => {
-          console.error('Spotify player playback error:', message);
-          setPlayerStatus('playback_error');
-        });
-        player.connect();
-      } catch (error) {
-        console.error('Error initializing Spotify player:', error);
-      }
-    }
-    
     return () => {
-      try { 
-        if (playerRef.current) {
-          playerRef.current.disconnect(); 
-        }
-      } catch (error) {
-        console.error('Error disconnecting Spotify player:', error);
+      // Cleanup player
+      if (playerRef.current) {
+        playerRef.current.disconnect().catch(console.error);
+        playerRef.current = null;
       }
-      if (script.parentNode) {
-        document.body.removeChild(script);
+      
+      // Remove the script if it exists
+      const existingScript = document.querySelector('script[src="https://sdk.scdn.co/spotify-player.js"]');
+      if (existingScript?.parentNode) {
+        existingScript.parentNode.removeChild(existingScript);
       }
+      
+      // Clean up the global callback
+      delete window.onSpotifyWebPlaybackSDKReady;
     };
-  }, [token]);
+  }, [token, initializePlayer]);
 
   const ensureAuth = () => {
     if (token?.access_token) return true;
