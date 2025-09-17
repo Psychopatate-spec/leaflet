@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "./static/css/main.18ac89cf.css",
-    "main.js": "./static/js/main.739fb8bd.js",
+    "main.js": "./static/js/main.8de1c727.js",
     "static/media/autumn-forest-path-bg.jpg": "./static/media/autumn-forest-path-bg.48b654ab52df5ce10154.jpg",
     "index.html": "./index.html",
     "main.18ac89cf.css.map": "./static/css/main.18ac89cf.css.map",
-    "main.739fb8bd.js.map": "./static/js/main.739fb8bd.js.map"
+    "main.8de1c727.js.map": "./static/js/main.8de1c727.js.map"
   },
   "entrypoints": [
     "static/css/main.18ac89cf.css",
-    "static/js/main.739fb8bd.js"
+    "static/js/main.8de1c727.js"
   ]
 }
