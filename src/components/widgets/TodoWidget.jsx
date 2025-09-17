@@ -1,5 +1,5 @@
 // React import not required with the new JSX transform
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Leaf from '../Leaf';
 import SoundEffects from '../SoundEffects';
 
@@ -13,8 +13,9 @@ const TodoWidget = () => {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
   const editInputRef = useRef(null);
-  const sounds = SoundEffects();
-  const API_BASE = '';
+  const sounds = useMemo(() => SoundEffects(), []);
+  const isElectron = typeof window !== 'undefined' && window.location.protocol !== 'http:' && window.location.protocol !== 'https:';
+  const API_BASE = isElectron ? 'http://localhost:4000' : '';
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -36,7 +37,7 @@ const TodoWidget = () => {
       }
     };
     fetchTasks();
-  }, []);
+  }, [API_BASE]);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));

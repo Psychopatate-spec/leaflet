@@ -5,7 +5,7 @@ const Window = ({ id, title, children, x = 80, y = 80, width = 380, height, onDr
   const windowRef = useRef(null);
   const draggingRef = useRef({ isDragging: false, startPointerX: 0, startPointerY: 0, startWindowX: x, startWindowY: y });
   const [position, setPosition] = useState({ x, y });
-  const [size, setSize] = useState({ width, height: undefined });
+  const [size] = useState({ width, height: undefined });
   const headerRef = useRef(null);
   const bodyRef = useRef(null);
 
@@ -42,7 +42,7 @@ const Window = ({ id, title, children, x = 80, y = 80, width = 380, height, onDr
       window.removeEventListener('pointerup', handlePointerUp);
       window.removeEventListener('pointercancel', handlePointerUp);
     };
-  }, [id, onDragEnd, position]);
+  }, [id, onDragEnd, position, size]);
 
   const onPointerDownHeader = (e) => {
     // Ignore drags starting from action buttons (e.g., close)

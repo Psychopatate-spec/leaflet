@@ -2,7 +2,8 @@
 
 // Spotify API credentials
 const CLIENT_ID = 'c5e18e349b6f40f9a36d3b0b742c40b9';
-const CLIENT_SECRET = '0e02137e32cc4ef6b5602bdfcdfda8fb';
+// eslint-disable-next-line no-unused-vars
+const CLIENT_SECRET = '0e02137e32cc4ef6b5602bdfcdfda8fb'; // unused in PKCE; kept for reference
 // IMPORTANT: Redirect URI must match what you register in the Spotify Dashboard exactly.
 // For GitHub Pages project sites, the deployed app URL is typically
 // https://<user>.github.io/<repo>. Do NOT use the GitHub repository URL.

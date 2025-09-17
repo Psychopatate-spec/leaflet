@@ -1,8 +1,10 @@
 // React import not required with the new JSX transform
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Window from './Window';
+import SoundEffects from '../SoundEffects';
 
 const WidgetManager = ({ widgets }) => {
+  const sounds = useMemo(() => SoundEffects(), []);
   const [instances, setInstances] = useState([]);
   const [zCounter, setZCounter] = useState(10);
 
@@ -76,7 +78,17 @@ const WidgetManager = ({ widgets }) => {
     <div className="widget-manager">
       <div className="widget-launcher">
         {Object.entries(widgets).map(([type, def]) => (
-          <button key={type} type="button" onClick={() => openWidget(type)}>{def.title}</button>
+          <button 
+            key={type} 
+            type="button" 
+            onClick={() => {
+              sounds.playClickSound();
+              openWidget(type);
+            }}
+            onMouseEnter={sounds.playHoverSound}
+          >
+            {def.title}
+          </button>
         ))}
       </div>
       {instances.map((inst) => {

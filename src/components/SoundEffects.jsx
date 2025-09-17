@@ -1,43 +1,46 @@
-// React import not required with the new JSX transform
+// Audio context singleton
+let audioContext;
 
 const SoundEffects = () => {
+  // Initialize audio context on first interaction
+  const initAudioContext = () => {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioContext;
+  };
+
   // Create audio context for sound effects
   const playSound = (frequency, duration = 200, type = 'sine') => {
     try {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
+      const ctx = initAudioContext();
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
       
       oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
+      gainNode.connect(ctx.destination);
       
-      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
       oscillator.type = type;
       
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration / 1000);
       
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + duration / 1000);
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + duration / 1000);
     } catch (error) {
-      // Silently fail if audio context is not supported
-      console.log('Audio not supported');
+      console.log('Audio error:', error);
     }
   };
 
-  // Sound effect functions
-  const playAddSound = () => playSound(523.25, 300, 'sine'); // C5
-  const playCompleteSound = () => playSound(659.25, 400, 'triangle'); // E5
-  const playDeleteSound = () => playSound(392.00, 200, 'sawtooth'); // G4
-  const playEditSound = () => playSound(440.00, 150, 'square'); // A4
-  const playHoverSound = () => playSound(880.00, 100, 'sine'); // A5
-
+  // Return stable function references
   return {
-    playAddSound,
-    playCompleteSound,
-    playDeleteSound,
-    playEditSound,
-    playHoverSound
+    playClickSound: () => playSound(440.00, 100, 'sine'),
+    playAddSound: () => playSound(523.25, 300, 'sine'),
+    playCompleteSound: () => playSound(659.25, 400, 'triangle'),
+    playDeleteSound: () => playSound(392.00, 200, 'sawtooth'),
+    playEditSound: () => playSound(440.00, 150, 'square'),
+    playHoverSound: () => playSound(880.00, 100, 'sine')
   };
 };
 

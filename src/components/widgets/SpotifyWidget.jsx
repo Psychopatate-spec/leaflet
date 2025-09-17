@@ -1,6 +1,7 @@
 // React import not required with the new JSX transform
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { beginLogin, completeLoginIfRedirected, getStoredToken } from './spotifyAuth';
+import SoundEffects from '../SoundEffects';
 
 const SpotifyWidget = () => {
   const [query, setQuery] = useState('');
@@ -10,6 +11,7 @@ const SpotifyWidget = () => {
   const [deviceId, setDeviceId] = useState(null);
   const [playerStatus, setPlayerStatus] = useState('disconnected');
   const playerRef = useRef(null);
+  const sounds = useMemo(() => SoundEffects(), []);
 
   useEffect(() => {
     (async () => {
@@ -95,14 +97,19 @@ const SpotifyWidget = () => {
 
   const ensureAuth = () => {
     if (token?.access_token) return true;
+    sounds.playClickSound();
     beginLogin();
     return false;
   };
 
   const search = async (e) => {
     e.preventDefault();
+    sounds.playClickSound();
     if (!ensureAuth()) return;
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      sounds.playEditSound();
+      return;
+    }
     
     try {
       const res = await fetch(`https://api.spotify.com/v1/search?type=track,album&limit=15&q=${encodeURIComponent(query)}`, {
@@ -143,10 +150,12 @@ const SpotifyWidget = () => {
   };
 
   const play = async (item) => {
-    if (!ensureAuth() || !deviceId) {
+    sounds.playClickSound();
+    if (!token?.access_token || !deviceId) {
       console.error('Cannot play: missing authentication or device ID');
       return;
     }
+    sounds.playClickSound();
     
     setCurrent(item);
     const isAlbum = item.type === 'album';
@@ -208,7 +217,13 @@ const SpotifyWidget = () => {
         {!token?.access_token ? (
           <div className="muted">
             {getStatusMessage()} 
-            <button type="button" onClick={() => beginLogin()}>Login</button>
+            <button 
+              type="button" 
+              onClick={() => ensureAuth()}
+              onMouseEnter={sounds.playHoverSound}
+            >
+              Login
+            </button>
           </div>
         ) : (
           <div className={`status ${playerStatus}`}>
@@ -216,9 +231,27 @@ const SpotifyWidget = () => {
           </div>
         )}
       </div>
-      <form onSubmit={search} className="spotify-search">
-        <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search songs or albums" />
-        <button type="submit">Search</button>
+      <form 
+        onSubmit={search} 
+        className="spotify-search"
+      >
+        <input 
+          type="text" 
+          value={query} 
+          onChange={(e) => {
+            sounds.playEditSound();
+            setQuery(e.target.value);
+          }} 
+          onClick={(e) => sounds.playClickSound()}
+          placeholder="Search songs or albums"
+          onMouseEnter={sounds.playHoverSound}
+        />
+        <button 
+          type="submit"
+          onMouseEnter={sounds.playHoverSound}
+        >
+          Search
+        </button>
       </form>
       {current && (
         <div className="spotify-now-playing">
@@ -229,9 +262,15 @@ const SpotifyWidget = () => {
           </div>
         </div>
       )}
-      <div className="spotify-results">
+      <div className="spotify-results" onClick={(e) => e.target === e.currentTarget && sounds.playClickSound()}>
         {results.map(r => (
-          <button key={r.uri} type="button" className="spotify-result" onClick={() => play(r)}>
+          <button 
+            key={r.uri} 
+            type="button" 
+            className="spotify-result" 
+            onClick={() => play(r)}
+            onMouseEnter={sounds.playHoverSound}
+          >
             <img alt="art" src={r.artwork} />
             <div className="meta">
               <div className="title">{r.title}</div>

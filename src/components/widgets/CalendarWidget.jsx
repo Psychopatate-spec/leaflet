@@ -1,12 +1,12 @@
 // React import not required with the new JSX transform
 import { useEffect, useMemo, useState } from 'react';
+import SoundEffects from '../SoundEffects';
 
 const API_BASE = '';
 
 const getMonthMatrix = (year, month) => {
   const firstDay = new Date(year, month, 1);
   const startDay = firstDay.getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const weeks = [];
   let day = 1 - startDay;
   for (let w = 0; w < 6; w++) {
@@ -29,6 +29,7 @@ const CalendarWidget = () => {
   const [selectedDate, setSelectedDate] = useState(today);
   const [tasksByDate, setTasksByDate] = useState({});
   const [newTask, setNewTask] = useState('');
+  const sounds = useMemo(() => SoundEffects(), []);
 
   // Load tasks from API and group by dueDate (YYYY-MM-DD)
   useEffect(() => {
@@ -59,7 +60,11 @@ const CalendarWidget = () => {
   const matrix = useMemo(() => getMonthMatrix(current.getFullYear(), current.getMonth()), [current]);
 
   const addTask = async () => {
-    if (!newTask.trim()) return;
+    if (!newTask.trim()) {
+      sounds.playEditSound();
+      return;
+    }
+    sounds.playClickSound();
     const key = dateKey(selectedDate);
     try {
       const res = await fetch(`${API_BASE}/api/tasks`, {
@@ -81,6 +86,7 @@ const CalendarWidget = () => {
   };
 
   const toggleTask = async (key, id) => {
+    sounds.playClickSound();
     const target = (tasksByDate[key] || []).find(t => t.id === id);
     const completed = !target?.completed;
     const next = (tasksByDate[key] || []).map(t => t.id === id ? { ...t, completed } : t);
@@ -91,6 +97,7 @@ const CalendarWidget = () => {
   };
 
   const removeTask = async (key, id) => {
+    sounds.playClickSound();
     const next = (tasksByDate[key] || []).filter(t => t.id !== id);
     setTasksByDate({ ...tasksByDate, [key]: next });
     try {
@@ -104,16 +111,42 @@ const CalendarWidget = () => {
   return (
     <div className="calendar-widget" style={{ maxHeight: '60vh', overflow: 'auto' }}>
       <div className="calendar-header">
-        <button type="button" onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))}>‹</button>
+        <button 
+          type="button" 
+          onClick={() => {
+            sounds.playClickSound();
+            setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1));
+          }}
+          onMouseEnter={sounds.playHoverSound}
+        >
+          ‹
+        </button>
         <div className="calendar-title">{current.toLocaleString(undefined, { month: 'long', year: 'numeric' })}</div>
-        <button type="button" onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))}>›</button>
+        <button 
+          type="button" 
+          onClick={() => {
+            sounds.playClickSound();
+            setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1));
+          }}
+          onMouseEnter={sounds.playHoverSound}
+        >
+          ›
+        </button>
       </div>
       <div className="calendar-grid">
         {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d) => (
           <div key={d} className="calendar-cell calendar-dow">{d}</div>
         ))}
         {matrix.flat().map((cell, idx) => (
-          <div key={idx} className={`calendar-cell ${cell.inMonth ? '' : 'muted'} ${dateKey(cell.date) === selectedKey ? 'selected' : ''}`} onClick={() => setSelectedDate(cell.date)}>
+          <div 
+            key={idx} 
+            className={`calendar-cell ${cell.inMonth ? '' : 'muted'} ${dateKey(cell.date) === selectedKey ? 'selected' : ''}`} 
+            onClick={() => {
+              sounds.playClickSound();
+              setSelectedDate(cell.date);
+            }}
+            onMouseEnter={sounds.playHoverSound}
+          >
             <div className="calendar-date-number">{cell.date.getDate()}</div>
             <div className="calendar-date-dots">
               {(tasksByDate[dateKey(cell.date)] || []).slice(0,3).map(t => (
@@ -124,20 +157,63 @@ const CalendarWidget = () => {
         ))}
       </div>
       <div className="calendar-sidebar">
-        <div className="calendar-today">Today: {today.toLocaleDateString()}</div>
-        <div className="calendar-selected">Selected: {selectedDate.toLocaleDateString()}</div>
+        <div 
+          className="calendar-today"
+          onMouseEnter={sounds.playHoverSound}
+        >
+          Today: {today.toLocaleDateString()}
+        </div>
+        <div 
+          className="calendar-selected"
+          onMouseEnter={sounds.playHoverSound}
+        >
+          Selected: {selectedDate.toLocaleDateString()}
+        </div>
         <div className="calendar-add">
-          <input type="text" value={newTask} onChange={(e) => setNewTask(e.target.value)} placeholder="New task for selected date" />
-          <button type="button" onClick={addTask}>Add</button>
+          <input 
+            type="text" 
+            value={newTask} 
+            onChange={(e) => {
+              sounds.playEditSound();
+              setNewTask(e.target.value);
+            }}
+            onClick={() => sounds.playClickSound()}
+            placeholder="New task for selected date"
+            onMouseEnter={sounds.playHoverSound}
+          />
+          <button 
+            type="button" 
+            onClick={addTask}
+            onMouseEnter={sounds.playHoverSound}
+          >
+            Add
+          </button>
         </div>
         <ul className="calendar-task-list">
           {selectedTasks.map(t => (
             <li key={t.id} className="calendar-task-item">
               <label>
-                <input type="checkbox" checked={t.completed} onChange={() => toggleTask(selectedKey, t.id)} />
-                <span className={t.completed ? 'completed' : ''}>{t.text}</span>
+                <input 
+                  type="checkbox" 
+                  checked={t.completed} 
+                  onChange={() => toggleTask(selectedKey, t.id)}
+                  onMouseEnter={sounds.playHoverSound}
+                />
+                <span 
+                  className={t.completed ? 'completed' : ''}
+                  onMouseEnter={sounds.playHoverSound}
+                >
+                  {t.text}
+                </span>
               </label>
-              <button type="button" className="delete-btn" onClick={() => removeTask(selectedKey, t.id)}>Delete</button>
+              <button 
+                type="button" 
+                className="delete-btn" 
+                onClick={() => removeTask(selectedKey, t.id)}
+                onMouseEnter={sounds.playHoverSound}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
